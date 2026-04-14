@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS projectManagement_app;
-USE projectManagement_app;
-
 -- Drop existing tables in reverse order of dependencies
 DROP TABLE IF EXISTS expense;
 DROP TABLE IF EXISTS transactions;

@@ -22,7 +22,7 @@ async function testDatabase() {
         const [tables] = await connection.execute('SHOW TABLES');
         const tableNames = tables.map(t => Object.values(t)[0]);
         
-        const requiredTables = ['admins', 'projects', 'students', 'payments', 'expenses', 'transactions'];
+        const requiredTables = ['admins', 'projects', 'student_detail', 'payment_status', 'expense', 'transactions'];
         const missingTables = requiredTables.filter(t => !tableNames.includes(t));
 
         if (missingTables.length > 0) {
