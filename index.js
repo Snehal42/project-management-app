@@ -64,6 +64,36 @@ app.use((req, res, next) => {
     next();
 });
 
+
+// Connection debug route
+app.get('/debug-db', async (req, res) => {
+    try {
+        const dbStatus = {
+            host: process.env.DB_HOST ? 'SET' : 'MISSING',
+            user: process.env.DB_USER ? 'SET' : 'MISSING',
+            db: process.env.DB_NAME ? 'SET' : 'MISSING',
+            ssl: process.env.DB_SSL,
+            env: process.env.NODE_ENV
+        };
+
+        const [rows] = await pool.query('SELECT 1 as connection_test');
+        res.json({
+            success: true,
+            configuration: dbStatus,
+            message: 'Successfully connected',
+            data: rows
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: 'Database failed',
+            error_code: err.code,
+            error_message: err.message
+        });
+    }
+});
+
+
 // Global Error Handler Helper
 const asyncHandler = (fn) => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
@@ -607,6 +637,36 @@ app.post("/transactions/:id/update", isAuthenticated, [
 
 
 // ─────────────────────────────────────────────
+
+// Connection debug route
+app.get('/debug-db', async (req, res) => {
+    try {
+        const dbStatus = {
+            host: process.env.DB_HOST ? 'SET' : 'MISSING',
+            user: process.env.DB_USER ? 'SET' : 'MISSING',
+            db: process.env.DB_NAME ? 'SET' : 'MISSING',
+            ssl: process.env.DB_SSL,
+            env: process.env.NODE_ENV
+        };
+
+        const [rows] = await pool.query('SELECT 1 as connection_test');
+        res.json({
+            success: true,
+            configuration: dbStatus,
+            message: 'Successfully connected',
+            data: rows
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: 'Database failed',
+            error_code: err.code,
+            error_message: err.message
+        });
+    }
+});
+
+
 // Global Error Handler (catches all async errors)
 // ─────────────────────────────────────────────
 app.use((err, req, res, next) => {
