@@ -39,9 +39,15 @@ const pool = mysql.createPool({
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    ssl: (process.env.NODE_ENV === 'production' || process.env.DB_SSL === 'true') ? {
+        rejectUnauthorized: true,
+        // If you need to specify the CA file specifically on Vercel:
+        // ca: fs.readFileSync(path.join(__dirname, 'isrgrootx1.pem'))
+    } : false
 });
 
 // Authentication Middleware
