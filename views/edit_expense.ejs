@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Edit Expense | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Edit Expense</h1>
+            <p class="page-subtitle text-center"><%= expense.project_name %> | <%= expense.college %></p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(e) { %>
+                                <li><%= e.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/expense/<%= expense.expense_id %>/edit">
+                    <input type="hidden" name="project_id" value="<%= expense.project_id %>">
+
+                    <div class="form-group">
+                        <label class="form-label">Details</label>
+                        <input type="text" name="details" class="form-input" value="<%= expense.details %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" name="expense_amount" class="form-input" value="<%= expense.expense_amount %>" required>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Save Changes ✓</button>
+                </form>
+            </div>
+
+            <div class="text-center mt-16">
+                <a class="back-link" href="/projects/<%= expense.project_id %>/expense">&larr; Back to Expenses</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

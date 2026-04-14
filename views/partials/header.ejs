@@ -1,0 +1,40 @@
+<!-- ═══════ GLOBAL HEADER ═══════ -->
+<!-- Background Orbs -->
+<div class="bg-orb bg-orb--1"></div>
+<div class="bg-orb bg-orb--2"></div>
+
+<header class="app-header">
+    <a href="/" class="app-header__logo">
+        <span class="app-header__logo-icon">⚡</span>
+        <span class="app-header__logo-text">IOTECH Solutions</span>
+    </a>
+
+    <nav class="app-header__nav" id="main-nav">
+        <a href="/dashboard" class="app-header__nav-link <%= locals.activePage === 'dashboard' ? 'app-header__nav-link--active' : '' %>">
+            <span>🏠</span> Dashboard
+        </a>
+        <a href="/projects" class="app-header__nav-link <%= locals.activePage === 'projects' ? 'app-header__nav-link--active' : '' %>">
+            <span>📁</span> Projects
+        </a>
+        <a href="/transactions" class="app-header__nav-link <%= locals.activePage === 'transactions' ? 'app-header__nav-link--active' : '' %>">
+            <span>💳</span> Transactions
+        </a>
+    </nav>
+
+    <div class="app-header__right">
+        <% if (locals.username) { %>
+            <span class="app-header__user">👤 <%= username %></span>
+        <% } %>
+
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <span class="theme-toggle__icon--sun">☀️</span>
+            <span class="theme-toggle__icon--moon">🌙</span>
+        </button>
+
+        <a href="/logout" class="app-header__logout">Logout</a>
+    </div>
+
+    <button class="app-header__hamburger" onclick="document.getElementById('main-nav').classList.toggle('open')" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>

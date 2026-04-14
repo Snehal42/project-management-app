@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Add Student | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Add Student</h1>
+            <p class="page-subtitle text-center">Add group members to the project.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(error) { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form action="/projects/new/group/<%= project_id %>" method="POST">
+                    <input type="hidden" name="project_id" value="<%= project_id %>">
+
+                    <div class="form-group">
+                        <label class="form-label">Student Name</label>
+                        <input type="text" name="student_name" class="form-input" required maxlength="150" placeholder="Full Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" name="phone" class="form-input" pattern="[0-9]{10,20}" title="Please enter a valid phone number" placeholder="e.g. 9876543210">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-input" required placeholder="example@email.com">
+                    </div>
+
+                    <div class="btn-group mt-24">
+                        <button type="submit" name="action" value="add_more" class="btn btn--secondary" style="flex: 1;">Save & Add Another</button>
+                        <button type="submit" name="action" value="next" class="btn btn--primary" style="flex: 1;">Next Step &rarr;</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="text-center">
+                <a href="/projects" class="back-link">&larr; Back to Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Login | IOTECH Solutions</title>
+</head>
+<body class="login-page">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    
+    <nav class="landing-nav">
+        <a href="/" class="app-header__logo">
+            <span class="app-header__logo-icon">⚡</span>
+            <span class="app-header__logo-text">IOTECH Solutions</span>
+        </a>
+        <div class="app-header__right">
+            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                <span class="theme-toggle__icon--sun">☀️</span>
+                <span class="theme-toggle__icon--moon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="login-card">
+        <h2 class="login-card__title">Welcome Back</h2>
+        <p class="login-card__subtitle">Please login to access your dashboard</p>
+
+        <% if (locals.error) { %>
+            <div class="form-error">
+                <ul>
+                    <li><%= error %></li>
+                </ul>
+            </div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-input" placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-input" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Secure Login &rarr;</button>
+        </form>
+    </div>
+
+</body>
+</html>

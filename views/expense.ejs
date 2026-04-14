@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title><%= project.project_name %> — Expenses | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="text-center mb-24">
+            <h1 class="page-title"><%= project.project_name %></h1>
+            <p class="page-subtitle"><%= project.college || '' %></p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <ul class="tab-nav__list">
+                <li><a href="/projects/<%= project.project_id %>/details" class="tab-nav__link">👥 Group Info</a></li>
+                <li><a href="/projects/<%= project.project_id %>/paymentStatus" class="tab-nav__link">💰 Payment Status</a></li>
+                <li><a href="/projects/<%= project.project_id %>/expense" class="tab-nav__link tab-nav__link--active">📊 Expense</a></li>
+            </ul>
+        </nav>
+
+        <!-- Fees Card -->
+        <div class="fees-card">
+            Fees: ₹<%= expense_details.length > 0 ? expense_details[0].fees : 'N/A' %>
+        </div>
+
+        <!-- Expenses Table -->
+        <div class="table-container" style="max-width: 900px; margin: 0 auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Sr.No</th>
+                        <th>Details</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (expense_details.length === 0) { %>
+                        <tr><td colspan="4" class="text-center" style="padding: 40px; color: var(--text-muted);">No expenses added yet.</td></tr>
+                    <% } %>
+
+                    <% for (let i = 0; i < expense_details.length; i++) { %>
+                        <% let exp = expense_details[i]; %>
+                        <tr>
+                            <td><%= i + 1 %></td>
+                            <td><%= exp.details %></td>
+                            <td>₹<%= exp.expense_amount %></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn--secondary btn--sm" onclick="editExpense('<%= exp.expense_id %>')">✏️</button>
+                                    <button class="btn btn--danger btn--sm" onclick="deleteExpense('<%= exp.expense_id %>', '<%= exp.project_id %>')">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-24">
+            <button class="btn btn--primary btn--lg" onclick="addExpense('<%= project.project_id %>')">+ Add Expense</button>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        function addExpense(projectId){
+            window.location.href = `/projects/${projectId}/expense/add`;
+        }
+        function editExpense(expenseId){
+            window.location.href = `/expense/${expenseId}/edit`;
+        }
+        function deleteExpense(expenseId, projectId){
+            if(confirm("Are you sure you want to delete this expense?")){
+                fetch(`/expense/${expenseId}/delete`, { method: "DELETE" })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) window.location.href = `/projects/${projectId}/expense`;
+                    else alert("Delete failed!");
+                });
+            }
+        }
+    </script>
+</body>
+</html>

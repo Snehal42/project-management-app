@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title><%= project.project_name %> — Payment Status | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="text-center mb-24">
+            <h1 class="page-title"><%= project.project_name %></h1>
+            <p class="page-subtitle"><%= project.college || '' %></p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <ul class="tab-nav__list">
+                <li><a href="/projects/<%= project.project_id %>/details" class="tab-nav__link">👥 Group Info</a></li>
+                <li><a href="/projects/<%= project.project_id %>/paymentStatus" class="tab-nav__link tab-nav__link--active">💰 Payment Status</a></li>
+                <li><a href="/projects/<%= project.project_id %>/expense" class="tab-nav__link">📊 Expense</a></li>
+            </ul>
+        </nav>
+
+        <h2 class="section-title text-center">Payment Status</h2>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+            <% if (payment_details.length === 0) { %>
+                <div class="empty-state">
+                    <div class="empty-state__icon">💰</div>
+                    <p class="empty-state__text">No payment status added yet.</p>
+                    <a href="/projects/new/addpaymentstatus/<%= project.project_id %>" class="btn btn--primary">+ Add Payment Status</a>
+                </div>
+            <% } %>
+
+            <% payment_details.forEach(payment => { %>
+                <div class="payment-card">
+                    <div class="payment-card__info">
+                        <span>First Installment: <strong>₹<%= payment.first_installment %></strong></span>
+                        <span>Second Installment: <strong>₹<%= payment.second_installment %></strong></span>
+                        <span>Total: <strong>₹<%= payment.total %></strong></span>
+                        <span>Paid: <strong>₹<%= payment.paid %></strong></span>
+                        <span>Remaining: <strong>₹<%= payment.remaining %></strong></span>
+                        <span class="badge <%= payment.remaining > 0 ? 'badge--danger' : 'badge--completed' %>">
+                            <%= payment.remaining > 0 ? 'Pending' : 'Completed' %>
+                        </span>
+                    </div>
+                    <div class="text-right mt-16">
+                        <button class="btn btn--secondary btn--sm" onclick="editPayment('<%= payment.payment_id %>')">✏️ Edit</button>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        function editPayment(paymentId) {
+            window.location.href = `/payment/${paymentId}/edit`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>All Projects | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-header__left">
+                <h1 class="page-title">All Projects</h1>
+                <p class="page-subtitle">Manage and track all your projects in one place.</p>
+            </div>
+            <a href="/projects/new" class="btn btn--primary">+ New Project</a>
+        </div>
+
+        <div class="search-bar">
+            <span class="search-bar__icon">🔍</span>
+            <input type="text" id="searchInput" name="search" class="search-bar__input" placeholder="Search project name...">
+        </div>
+
+        <div class="card-grid projects-container">
+            <% for (project of projects) { %>
+            <div class="project-card" style="position: relative;" data-id="<%= project.project_id %>">
+                <% if (project.days_remaining !== null && project.project_status !== 'Completed') { %>
+                    <div style="position: absolute; top: -10px; right: -10px; background: <%= project.days_remaining < 0 ? 'var(--danger)' : (project.days_remaining <= 5 ? 'var(--warning)' : 'var(--accent)') %>; color: white; min-width: 28px; height: 28px; padding: 0 6px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; border: 2px solid var(--bg-surface); box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10;" title="<%= project.days_remaining < 0 ? Math.abs(project.days_remaining) + ' days overdue' : project.days_remaining + ' days remaining' %>">
+                        <%= project.days_remaining %>
+                    </div>
+                <% } %>
+                <div class="project-card__header">
+                    <h3 class="project-card__name"><%= project.project_name %></h3>
+                    <% 
+                        let badgeClass = 'badge--pending';
+                        if (project.project_status === 'Completed') badgeClass = 'badge--completed';
+                        else if (project.project_status === 'In Progress') badgeClass = 'badge--in-progress';
+                    %>
+                    <span class="badge <%= badgeClass %>"><%= project.project_status %></span>
+                </div>
+                <p class="project-card__remark"><%= project.remark || 'No remarks' %></p>
+                <div class="project-card__actions">
+                    <button class="btn btn--secondary btn--sm edit-btn" data-id="<%= project.project_id %>">✏️ Edit</button>
+                    <button class="btn btn--danger btn--sm delete-btn" data-id="<%= project.project_id %>">🗑️ Delete</button>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        /* CLICK ENTIRE CARD TO OPEN DETAILS */
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName === "BUTTON" || e.target.closest('button')) return;
+                const id = this.getAttribute('data-id');
+                window.location.href = `/projects/${id}/details`;
+            });
+        });
+
+        /* LIVE SEARCH WITH DEBOUNCE */
+        const searchInput = document.getElementById("searchInput");
+        const container = document.querySelector(".projects-container");
+        let timer;
+
+        searchInput.addEventListener("input", function () {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                let value = searchInput.value;
+                fetch(`/projects?search=${value}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        let temp = document.createElement("div");
+                        temp.innerHTML = html;
+                        let newCards = temp.querySelector(".projects-container");
+                        container.innerHTML = newCards.innerHTML;
+
+                        /* Reattach click listeners */
+                        document.querySelectorAll('.project-card').forEach(card => {
+                            card.addEventListener('click', function(e) {
+                                if (e.target.tagName === "BUTTON" || e.target.closest('button')) return;
+                                const id = this.getAttribute('data-id');
+                                window.location.href = `/projects/${id}/details`;
+                            });
+                        });
+                    });
+            }, 300);
+        });
+
+        /* DELETE PROJECT */
+        document.addEventListener("click", function (e) {
+            const btn = e.target.closest(".delete-btn");
+            if (btn) {
+                e.stopPropagation();
+                const id = btn.dataset.id;
+                if (confirm("Are you sure you want to delete this project?")) {
+                    fetch(`/projects/${id}`, { method: "DELETE" })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            btn.closest(".project-card").remove();
+                        } else {
+                            alert("Failed to delete project.");
+                        }
+                    })
+                    .catch(() => alert("Server error."));
+                }
+            }
+        });
+
+        /* EDIT PROJECT */
+        document.addEventListener("click", function (e) {
+            const btn = e.target.closest(".edit-btn");
+            if (btn) {
+                e.stopPropagation();
+                window.location.href = `/projects/${btn.dataset.id}/edit`;
+            }
+        });
+    </script>
+</body>
+</html>

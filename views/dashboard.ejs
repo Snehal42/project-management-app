@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Dashboard | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-header__left">
+                <h1 class="page-title">Project Management Dashboard</h1>
+                <p class="page-subtitle">Welcome back<%= locals.username ? ', ' + username : '' %>. Here's your overview.</p>
+            </div>
+            <a href="/projects/new" class="btn btn--primary btn--lg">+ New Project</a>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card" onclick="window.location.href='/projects'">
+                <p class="stat-card__label">Ongoing Projects</p>
+                <p class="stat-card__value"><%= locals.ongoingCount || 0 %></p>
+            </div>
+            <div class="stat-card" onclick="window.location.href='/projects'">
+                <p class="stat-card__label">Deadline Approaching</p>
+                <p class="stat-card__value"><%= locals.deadlineCount || 0 %></p>
+            </div>
+            <div class="stat-card" onclick="window.location.href='/transactions'">
+                <p class="stat-card__label">Transactions</p>
+                <p class="stat-card__value"><%= locals.transactionsCount || 0 %></p>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;" class="text-center">
+            <a href="/projects" class="btn btn--secondary btn--lg">📁 View All Projects</a>
+            &nbsp;
+            <a href="/transactions" class="btn btn--secondary btn--lg">💳 View Transactions</a>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

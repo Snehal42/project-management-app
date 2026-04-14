@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Add Expense | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center"><%= project.project_name %></h1>
+            <p class="page-subtitle text-center"><%= project.college %></p>
+
+            <h2 class="section-title text-center">Add New Expense</h2>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(e) { %>
+                                <li><%= e.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/projects/<%= project.project_id %>/expense/add">
+                    <div class="form-group">
+                        <label class="form-label">Expense Details</label>
+                        <input type="text" name="details" class="form-input" placeholder="Enter Details" required maxlength="500">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" name="expense_amount" class="form-input" placeholder="Enter Amount" required step="0.01" min="1">
+                    </div>
+
+                    <div class="btn-group mt-24">
+                        <button type="submit" class="btn btn--primary btn--lg" style="flex: 1;">Save Expense ✓</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="/projects/<%= project.project_id %>/expense" class="back-link">&larr; Back to Expenses</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

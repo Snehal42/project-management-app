@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Add New Project | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Add New Project</h1>
+            <p class="page-subtitle text-center">Create a new workspace for your project.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(error) { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form action="/projects/new" method="POST">
+                    <div class="form-group">
+                        <label class="form-label">Project Name</label>
+                        <input type="text" name="project_name" class="form-input" required maxlength="150" placeholder="e.g. AI Security Dashboard">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">College Name</label>
+                        <input type="text" name="college" class="form-input" maxlength="150" placeholder="e.g. MIT College">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-input" maxlength="100" placeholder="e.g. Pune">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Project Status</label>
+                        <select name="project_status" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Remark</label>
+                        <textarea name="remark" class="form-textarea" placeholder="Any additional notes..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Deployment Date</label>
+                        <input type="date" name="deployment_date" class="form-input">
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Next Step &rarr;</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

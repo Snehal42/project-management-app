@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Edit Project | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Edit Project</h1>
+            <p class="page-subtitle text-center">Update project details and status.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(error) { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form action="/projects/<%= project.project_id %>/edit" method="POST">
+                    <div class="form-group">
+                        <label class="form-label">Project Name</label>
+                        <input type="text" name="project_name" class="form-input" value="<%= project.project_name %>" required maxlength="150">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">College Name</label>
+                        <input type="text" name="college" class="form-input" value="<%= project.college %>" maxlength="150" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-input" value="<%= project.city %>" maxlength="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Project Status</label>
+                        <select name="project_status" class="form-select">
+                            <option value="Pending" <%= project.project_status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="In Progress" <%= project.project_status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                            <option value="Completed" <%= project.project_status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Remark</label>
+                        <textarea name="remark" class="form-textarea"><%= project.remark %></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Deployment Date</label>
+                        <input type="date" name="deployment_date" class="form-input" value="<%= project.deployment_date ? (new Date(project.deployment_date)).toISOString().split('T')[0] : '' %>">
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Update Project ✓</button>
+                </form>
+            </div>
+
+            <div class="text-center mt-16">
+                <a href="/projects" class="back-link">&larr; Back to Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

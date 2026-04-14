@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Edit Transaction | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Edit Transaction</h1>
+            <p class="page-subtitle text-center">Update your transaction record.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(e) { %>
+                                <li><%= e.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/transactions/<%= transaction.transaction_id %>/update">
+                    <div class="form-group">
+                        <label class="form-label">Credit Amount (₹)</label>
+                        <input type="number" name="credit_amount" class="form-input" step="0.01" min="0" value="<%= transaction.credit_amount !== null ? transaction.credit_amount : '' %>" placeholder="Leave blank if not applicable">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Credit Description</label>
+                        <input type="text" name="credit_desc" class="form-input" value="<%= transaction.credit_desc || '' %>" maxlength="200" placeholder="e.g. Project Payment">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Debit Amount (₹)</label>
+                        <input type="number" name="debit_amount" class="form-input" step="0.01" min="0" value="<%= transaction.debit_amount !== null ? transaction.debit_amount : '' %>" placeholder="Leave blank if not applicable">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Debit Description</label>
+                        <input type="text" name="debit_desc" class="form-input" value="<%= transaction.debit_desc || '' %>" maxlength="200" placeholder="e.g. Server Hosting">
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Update Transaction ✓</button>
+                </form>
+            </div>
+
+            <div class="text-center mt-16">
+                <a class="back-link" href="/transactions">&larr; Back to Transactions</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

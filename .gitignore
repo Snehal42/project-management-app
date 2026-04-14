@@ -1,0 +1,4 @@
+node_modules/
+.env
+seed_admin.js
+init_db.js

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title><%= project.project_name %> — Details | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="text-center mb-24">
+            <h1 class="page-title"><%= project.project_name %></h1>
+            <p class="page-subtitle"><%= project.college || 'College Name' %></p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <ul class="tab-nav__list">
+                <li><a href="/projects/<%= project.project_id %>/details" class="tab-nav__link tab-nav__link--active">👥 Group Info</a></li>
+                <li><a href="/projects/<%= project.project_id %>/paymentStatus" class="tab-nav__link">💰 Payment Status</a></li>
+                <li><a href="/projects/<%= project.project_id %>/expense" class="tab-nav__link">📊 Expense</a></li>
+            </ul>
+        </nav>
+
+        <h2 class="section-title text-center">Project Group Details</h2>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+            <% if (details.length === 0) { %>
+                <div class="empty-state">
+                    <div class="empty-state__icon">👤</div>
+                    <p class="empty-state__text">No students added yet.</p>
+                    <a href="/projects/new/group/<%= project.project_id %>" class="btn btn--primary">+ Add First Student</a>
+                </div>
+            <% } else { %>
+                <% for(let detail of details) { %>
+                <div class="detail-card" data-student="<%= detail.student_id %>" data-project="<%= detail.project_id %>">
+                    <div class="detail-card__name"><%= detail.student_name %></div>
+                    <div class="detail-card__row">
+                        <div class="detail-card__info">
+                            <span>📞 <%= detail.phone || 'N/A' %></span>
+                            <span>✉️ <%= detail.email || 'N/A' %></span>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn--secondary btn--sm edit-student-btn">✏️ Edit</button>
+                            <button class="btn btn--danger btn--sm delete-student-btn">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <div class="text-center mt-24">
+                    <a href="/projects/new/group/<%= project.project_id %>" class="btn btn--primary">+ Add More Students</a>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener("click", function (e) {
+            /* DELETE STUDENT */
+            const delBtn = e.target.closest(".delete-student-btn");
+            if (delBtn) {
+                const card = delBtn.closest(".detail-card");
+                const studentId = card.dataset.student;
+                if (!confirm("Are you sure you want to delete this student?")) return;
+                fetch(`/student/${studentId}/delete`, { method: "POST" })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) card.remove();
+                    else alert("Delete failed");
+                });
+            }
+
+            /* EDIT STUDENT */
+            const editBtn = e.target.closest(".edit-student-btn");
+            if (editBtn) {
+                const studentId = editBtn.closest(".detail-card").dataset.student;
+                window.location.href = `/student/${studentId}/edit`;
+            }
+        });
+    </script>
+</body>
+</html>

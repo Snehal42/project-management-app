@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transactions | IOTECH Solution</title>
+
+<style>
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+body{
+    background: radial-gradient(circle at top,#151515,#0d0d0d 60%,#050505);
+    color:white;
+    padding:120px 20px;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* Soft Neon Glows */
+.glow-circle{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:0.22;
+    animation:float 6s ease-in-out infinite alternate;
+    z-index:-1;
+}
+.glow1{
+    width:300px;
+    height:300px;
+    background:#00eaff;
+    top:-60px;
+    right:-70px;
+}
+.glow2{
+    width:260px;
+    height:260px;
+    background:#ff00d4;
+    bottom:-60px;
+    left:-70px;
+}
+
+@keyframes float{
+    from{transform:translateY(0)}
+    to{transform:translateY(-20px)}
+}
+
+/* Heading */
+h1{
+    text-align:center;
+    font-size:2.3rem;
+    margin-bottom:30px;
+
+    padding:10px 20px;
+    background:rgba(255,255,255,0.05);
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.12);
+
+    box-shadow:0 0 15px rgba(0,255,255,0.15);
+}
+
+/* Table Container */
+.table-container{
+    margin:auto;
+    max-width:1000px;
+    overflow-x:auto;
+
+    background:rgba(255,255,255,0.06);
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+
+    box-shadow:0 0 20px rgba(0,255,255,0.18);
+}
+
+/* Table */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    padding:12px 18px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+th{
+    background:rgba(255,255,255,0.12);
+    font-weight:600;
+    text-shadow:0 0 10px cyan;
+}
+
+tr:hover{
+    background:rgba(255,255,255,0.06);
+}
+
+/* Edit & Delete Buttons */
+.edit-btn, .delete-btn{
+    padding:8px 14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+    font-size:0.9rem;
+    transition:0.3s;
+}
+
+.edit-btn{
+    background:rgba(0,255,255,0.25);
+    box-shadow:0 0 10px rgba(0,255,255,0.3);
+}
+
+.edit-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 18px cyan;
+}
+
+.delete-btn{
+    background:rgba(255,0,80,0.35);
+    box-shadow:0 0 10px rgba(255,0,80,0.3);
+}
+
+.delete-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 18px red;
+}
+
+/* Add Transaction Button (Floating) */
+.add-transaction-btn{
+    position:fixed;
+    bottom:35px;
+    right:35px;
+
+    padding:14px 22px;
+    font-size:1.1rem;
+    font-weight:600;
+    border:none;
+
+    border-radius:14px;
+    background:linear-gradient(135deg,#00eaff,#007bff);
+    color:white;
+
+    cursor:pointer;
+    box-shadow:0 0 28px rgba(0,255,255,0.35);
+    transition:0.3s ease;
+}
+
+.add-transaction-btn:hover{
+    transform:translateY(-5px) scale(1.05);
+    box-shadow:0 0 38px rgba(0,255,255,0.65);
+}
+
+/* Responsive */
+@media(max-width:600px){
+    h1{font-size:1.7rem;}
+    .add-transaction-btn{
+        right:15px;
+        bottom:15px;
+        font-size:0.95rem;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Background Glow -->
+<div class="glow-circle glow1"></div>
+<div class="glow-circle glow2"></div>
+
+<h1>Transaction Records</h1>
+
+<div class="table-container">
+    <table>
+        <tr>
+            <th>Sr.No</th>
+            <th>Credit Amount</th>
+            <th>Credit Details</th>
+            <th>Debit Amount</th>
+            <th>Debit Details</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+
+        <% for(transaction of transactions) { %>
+        <tr>
+            <td><%= transaction.transaction_id %></td>
+            <td><%= transaction.credit_amount %></td>
+            <td><%= transaction.credit_desc %></td>
+            <td><%= transaction.debit_amount %></td>
+            <td><%= transaction.debit_desc %></td>
+
+            <td>
+                <button class="edit-btn" onclick="editTransaction('<%= transaction.transaction_id %>')">
+                    Edit
+                </button>
+            </td>
+
+            <td>
+                <button class="delete-btn" data-id="<%= transaction.transaction_id %>">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        <% } %>
+
+    </table>
+</div>
+
+<button class="add-transaction-btn" onclick="window.location.href='/transactions/add'">
+    + ADD TRANSACTION
+</button>
+
+<script>
+// DELETE HANDLER
+document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.onclick = () => {
+        const id = btn.getAttribute("data-id");
+
+        if(!confirm("Are you sure you want to delete this transaction?")) return;
+
+        fetch(`/transactions/${id}/delete`, { method:"DELETE" })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                btn.closest("tr").remove();
+            } else {
+                alert("Delete failed!");
+            }
+        });
+    };
+});
+
+// EDIT FUNCTION
+function editTransaction(id){
+    window.location.href = `/transactions/${id}/edit`;
+}
+</script>
+
+</body>
+</html>

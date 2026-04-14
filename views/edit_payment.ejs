@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Edit Payment Status | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Edit Payment Status</h1>
+            <p class="page-subtitle text-center">Update project financials.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(e) { %>
+                                <li><%= e.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form action="/payment/<%= payment.payment_id %>/update" method="POST">
+                    <input type="hidden" name="project_id" value="<%= payment.project_id %>">
+
+                    <div class="form-group">
+                        <label class="form-label">First Installment (₹)</label>
+                        <input type="number" name="first_installment" class="form-input" step="0.01" min="0" value="<%= payment.first_installment %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Second Installment (₹)</label>
+                        <input type="number" name="second_installment" class="form-input" step="0.01" min="0" value="<%= payment.second_installment %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Total (₹)</label>
+                        <input type="number" name="total" class="form-input" step="0.01" min="1" value="<%= payment.total %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Paid (₹)</label>
+                        <input type="number" name="paid" class="form-input" step="0.01" min="0" value="<%= payment.paid %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Remaining (₹)</label>
+                        <input type="number" name="remaining" class="form-input" step="0.01" min="0" value="<%= payment.remaining %>" required>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Save Changes ✓</button>
+                </form>
+            </div>
+
+            <div class="text-center mt-16">
+                <a class="back-link" href="/projects/<%= payment.project_id %>/paymentStatus">&larr; Back to Payment Status</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

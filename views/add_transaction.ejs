@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Add Transaction | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Add Transaction</h1>
+            <p class="page-subtitle text-center">Record a new credit or debit entry.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(error) { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/transactions/add">
+                    <div class="form-group">
+                        <label class="form-label">Credit Amount (₹)</label>
+                        <input type="number" name="credit_amount" class="form-input" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Credit Description</label>
+                        <textarea name="credit_desc" class="form-textarea" placeholder="e.g. Payment received from client..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Debit Amount (₹)</label>
+                        <input type="number" name="debit_amount" class="form-input" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Debit Description</label>
+                        <textarea name="debit_desc" class="form-textarea" placeholder="e.g. Office supplies..."></textarea>
+                    </div>
+
+                    <div class="btn-group mt-24">
+                        <button type="submit" class="btn btn--primary btn--lg" style="flex: 1;">Save Transaction ✓</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="/transactions" class="back-link">&larr; Back to Transactions</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

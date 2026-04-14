@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Transactions | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-header__left">
+                <h1 class="page-title">Transaction Records</h1>
+                <p class="page-subtitle">View and manage all credit and debit transactions.</p>
+            </div>
+            <a href="/transactions/add" class="btn btn--primary">+ Add Transaction</a>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Sr.No</th>
+                        <th>Credit Amount</th>
+                        <th>Credit Details</th>
+                        <th>Debit Amount</th>
+                        <th>Debit Details</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let sr = 1; %>
+                    <% for(transaction of transactions) { %>
+                    <tr>
+                        <td><%= sr++ %></td>
+                        <td><%= transaction.credit_amount != null ? '₹' + transaction.credit_amount : '—' %></td>
+                        <td><%= transaction.credit_desc || '—' %></td>
+                        <td><%= transaction.debit_amount != null ? '₹' + transaction.debit_amount : '—' %></td>
+                        <td><%= transaction.debit_desc || '—' %></td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn--secondary btn--sm edit-btn" onclick="editTransaction('<%= transaction.transaction_id %>')">✏️</button>
+                                <button class="btn btn--danger btn--sm delete-btn" data-id="<%= transaction.transaction_id %>">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% } %>
+                    <% if (transactions.length === 0) { %>
+                    <tr><td colspan="6" class="text-center" style="padding: 40px; color: var(--text-muted);">No transactions yet.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+    /* DELETE HANDLER */
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.getAttribute("data-id");
+            if(!confirm("Are you sure you want to delete this transaction?")) return;
+            fetch(`/transactions/${id}/delete`, { method:"DELETE" })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    btn.closest("tr").remove();
+                } else {
+                    alert("Delete failed!");
+                }
+            });
+        };
+    });
+
+    function editTransaction(id){
+        window.location.href = `/transactions/${id}/edit`;
+    }
+    </script>
+</body>
+</html>

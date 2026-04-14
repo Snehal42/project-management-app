@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>IOTECH Solutions | College Software & Management</title>
+</head>
+<body class="landing-page">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+
+    <!-- Navigation -->
+    <nav class="landing-nav">
+        <a href="/" class="app-header__logo" style="text-decoration: none;">
+            <span class="app-header__logo-icon">⚡</span>
+            <span class="app-header__logo-text">IOTECH Solutions</span>
+        </a>
+        <div class="app-header__right">
+            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                <span class="theme-toggle__icon--sun">☀️</span>
+                <span class="theme-toggle__icon--moon">🌙</span>
+            </button>
+            <a href="/login" class="btn btn--primary">Login Portal</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="landing-hero" style="min-height: 80vh;">
+            <h1 class="landing-hero__title">Empowering Education <br>Through Intelligent Software</h1>
+            <p class="landing-hero__subtitle">We build and manage high-performance software projects for colleges and universities. Track student groups, manage deployment deadlines, and handle complex financials in one unified platform.</p>
+            <div class="btn-group" style="justify-content: center; margin-top: 16px;">
+                <a href="#features" class="btn btn--secondary btn--lg">Explore Features</a>
+                <a href="/login" class="btn btn--primary btn--lg">Enter Platform &rarr;</a>
+            </div>
+        </section>
+
+        <!-- Stats Section (Social Proof) -->
+        <section class="landing-section landing-section--alt">
+            <div class="landing-section__container">
+                <div class="stats-banner">
+                    <div>
+                        <div class="stat-item__number">50+</div>
+                        <div class="stat-item__label">Colleges Partnered</div>
+                    </div>
+                    <div>
+                        <div class="stat-item__number">500+</div>
+                        <div class="stat-item__label">Student Projects</div>
+                    </div>
+                    <div>
+                        <div class="stat-item__number">100%</div>
+                        <div class="stat-item__label">Deployment Success</div>
+                    </div>
+                    <div>
+                        <div class="stat-item__number">24/7</div>
+                        <div class="stat-item__label">Technical Support</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="landing-section">
+            <div class="section-heading">
+                <h2 class="section-heading__title">Everything You Need to Succeed</h2>
+                <p class="section-heading__subtitle">IOTECH Solutions provides a comprehensive suite of tools tailored specifically for ed-tech development and academic project management.</p>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card__icon">📊</div>
+                    <h3 class="feature-card__title">Real-Time Project Tracking</h3>
+                    <p class="feature-card__desc">Monitor the status of hundreds of student projects simultaneously. From 'Pending' to 'Deployed', never lose sight of a critical deadline again.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">💳</div>
+                    <h3 class="feature-card__title">Financial Management</h3>
+                    <p class="feature-card__desc">Easily log project payments, track academic group expenses, and calculate total revenue without ever opening a spreadsheet.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">👥</div>
+                    <h3 class="feature-card__title">Student Group Cohesion</h3>
+                    <p class="feature-card__desc">Maintain centralized databases of all students attached to a specific college project. Email, text, or export student data instantly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow / How it works -->
+        <section class="landing-section landing-section--alt">
+            <div class="landing-section__container">
+                <div class="section-heading">
+                    <h2 class="section-heading__title">How Project Management Works</h2>
+                    <p class="section-heading__subtitle">A streamlined process designed to take academic software projects from an initial pitch to a final, graded deployment.</p>
+                </div>
+
+                <div class="workflow-grid">
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">1</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Project Initiation</h3>
+                            <p class="workflow-step__desc">Register a new project under a designated college. Assign group members, establish the first installment payment, and set a hard deployment deadline.</p>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">2</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Development & Tracking</h3>
+                            <p class="workflow-step__desc">Our agents begin architectural design. Track expenses independently and monitor the 'Days Remaining' notifications directly from your smart dashboard to ensure on-time delivery.</p>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">3</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Final Deployment</h3>
+                            <p class="workflow-step__desc">Once the academic project is graded or finalized, change the status to 'Completed'. View the automated breakdown of total project cost vs. paid installments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="landing-section">
+            <div class="cta-banner">
+                <h2>Ready to transform your workflow?</h2>
+                <p>Join dozens of institutions that rely on IOTECH Solutions.</p>
+                <a href="/login" class="btn btn--primary btn--lg">Access Admin Portal</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Public Footer -->
+    <footer class="app-footer">
+        <div class="app-footer__inner">
+            <a href="/" class="app-footer__brand" style="text-decoration: none; color: inherit;">
+                ⚡ IOTECH Solutions
+            </a>
+            <div class="app-footer__links">
+                <a href="#" class="app-footer__link">About Us</a>
+                <a href="#" class="app-footer__link">Services</a>
+                <a href="#" class="app-footer__link">Privacy Policy</a>
+                <a href="#" class="app-footer__link">Contact Support</a>
+            </div>
+            <div class="app-footer__copy">
+                &copy; <%= new Date().getFullYear() %> IOTECH Solutions. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

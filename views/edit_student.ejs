@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <%- include('partials/head') %>
+    <title>Edit Student | IOTECH Solutions</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="page-title text-center">Edit Student</h1>
+            <p class="page-subtitle text-center">Update group member details.</p>
+
+            <div class="glass-card">
+                <% if (locals.errors) { %>
+                    <div class="form-error">
+                        <ul>
+                            <% errors.forEach(function(error) { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form action="/student/<%= student.student_id %>/update" method="POST">
+                    <input type="hidden" name="project_id" value="<%= student.project_id %>">
+
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="student_name" class="form-input" value="<%= student.student_name %>" required maxlength="150">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" name="phone" class="form-input" value="<%= student.phone %>" pattern="[0-9]{10,20}" title="Please enter a valid phone number">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-input" value="<%= student.email %>" required>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--block btn--lg mt-16">Save Changes ✓</button>
+                </form>
+            </div>
+
+            <div class="text-center mt-16">
+                <a href="/projects/<%= student.project_id %>/details" class="back-link">&larr; Back to Project Details</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
