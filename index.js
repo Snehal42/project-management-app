@@ -42,9 +42,12 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     port: parseInt(process.env.DB_PORT) || 4000,
     waitForConnections: true,
-    connectionLimit: 1,
+    connectionLimit: 1, // Single connection for serverless
     queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0,
     ssl: (process.env.NODE_ENV === "production" || process.env.DB_SSL === "true") ? {
+        ca: fs.readFileSync(path.join(__dirname, 'isrgrootx1.pem')),
         rejectUnauthorized: true,
         minVersion: "TLSv1.2"
     } : false
@@ -258,10 +261,13 @@ app.get("/projects/:id/paymentStatus", isAuthenticated, asyncHandler(async (req,
     res.render("paymentStatus.ejs", { payment_details, project, activePage: 'projects' });
 }));
 
-const port = 8080;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+// Start server only when running locally (Vercel handles the app export)
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    const port = process.env.PORT || 8080;
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
 
 app.get("/projects/new", isAuthenticated, (req, res) => {
     res.render("add_project", { activePage: 'projects' });
@@ -632,39 +638,6 @@ app.post("/transactions/:id/update", isAuthenticated, [
     res.redirect("/transactions");
 }));
 
-
-
-
-
-// ─────────────────────────────────────────────
-
-// Connection debug route
-app.get('/debug-db', async (req, res) => {
-    try {
-        const dbStatus = {
-            host: process.env.DB_HOST ? 'SET' : 'MISSING',
-            user: process.env.DB_USER ? 'SET' : 'MISSING',
-            db: process.env.DB_NAME ? 'SET' : 'MISSING',
-            ssl: process.env.DB_SSL,
-            env: process.env.NODE_ENV
-        };
-
-        const [rows] = await pool.query('SELECT 1 as connection_test');
-        res.json({
-            success: true,
-            configuration: dbStatus,
-            message: 'Successfully connected',
-            data: rows
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: 'Database failed',
-            error_code: err.code,
-            error_message: err.message
-        });
-    }
-});
 
 
 // Global Error Handler (catches all async errors)
