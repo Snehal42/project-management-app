@@ -6,7 +6,8 @@
     "start": "node index.js",
     "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "ci-test": "node --check index.js"
+    "ci-test": "node --check index.js",
+    "test:ci": "node test_db_structure.js"
   },
   "author": "\"Snehal Darade\"",
   "license": "ISC",

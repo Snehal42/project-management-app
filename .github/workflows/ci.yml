@@ -10,6 +10,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -23,5 +33,17 @@ jobs:
     - name: Install Dependencies
       run: npm ci
 
-    - name: Run Syntax Checks (CI Validation)
+    - name: Initialize Database Schema
+      run: mysql -h 127.0.0.1 -u root -ppassword test_db < schema.sql
+
+    - name: Run Syntax Checks
       run: npm run ci-test
+
+    - name: Run Automated Database Validation (CI/CD DB)
+      run: npm run test:ci
+      env:
+        DB_HOST: 127.0.0.1
+        DB_USER: root
+        DB_PASSWORD: password
+        DB_NAME: test_db
+        DB_PORT: 3306
