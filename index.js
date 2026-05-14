@@ -8,8 +8,10 @@ const helmet = require('helmet');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { body, validationResult } = require('express-validator');
+const MySQLStore = require('express-mysql-session')(session);
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy (e.g. Vercel)
 
 // Security and Middleware setup
 app.use(helmet({
@@ -21,18 +23,6 @@ app.set("views", path.join(__dirname, "/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Session configuration
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'fallback-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true, // Prevents XSS from reading the cookie
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
-    }
-}));
 
 // Create a connection pool (Optimized for Vercel & TiDB)
 const pool = mysql.createPool({
@@ -52,6 +42,31 @@ const pool = mysql.createPool({
         minVersion: "TLSv1.2"
     } : false
 });
+
+// Configure MySQL Session Store
+const sessionStore = new MySQLStore({
+    clearExpired: true,
+    checkExpirationInterval: 900000, // 15 mins
+    expiration: 1000 * 60 * 60 * 24 * 30, // 30 days
+}, pool);
+
+// Session configuration
+app.use(session({
+    store: sessionStore,
+    name: 'project_mgmt_session',
+    secret: process.env.SESSION_SECRET || 'fallback-secret',
+    proxy: process.env.NODE_ENV === 'production',
+    resave: true, // Required for some stores to sync correctly
+    saveUninitialized: false,
+    rolling: true, // Refreshes session on every request
+    cookie: { 
+        path: '/',
+        secure: process.env.NODE_ENV === 'production' && process.env.FORCE_HTTPS === 'true',
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+    }
+}));
 
 // Authentication Middleware
 const isAuthenticated = (req, res, next) => {
@@ -105,14 +120,20 @@ const asyncHandler = (fn) => (req, res, next) => {
 
 
 app.get("/", (req, res) => {
+    if (req.session.adminId) {
+        return res.redirect("/dashboard");
+    }
     res.render("home.ejs");
 });
 
 app.get("/login", (req, res) => {
+    if (req.session.adminId) {
+        return res.redirect("/dashboard");
+    }
     res.render("login.ejs");
 });
 
-app.get("/dashboard", isAuthenticated, asyncHandler(async (req, res) => {
+app.get("/dashboard",  asyncHandler(async (req, res) => {
     // 1. Ongoing Projects count
     const [ongoing] = await pool.execute("SELECT COUNT(*) as count FROM projects WHERE project_status != 'Completed'");
     // 2. Deadline Approaching count (<= 5 days)
@@ -142,7 +163,15 @@ app.post("/login", asyncHandler(async (req, res) => {
             req.session.adminId = admin.admin_id;
             req.session.username = admin.username;
             console.log(`Admin ${username} logged in`);
-            return res.redirect("/dashboard");
+            
+            // Explicitly save session before redirecting to avoid race conditions
+            return req.session.save((err) => {
+                if (err) {
+                    console.error('Session save error:', err);
+                    return res.render("login.ejs", { error: "Login system error. Please try again." });
+                }
+                res.redirect("/dashboard");
+            });
         }
     }
 
@@ -150,8 +179,11 @@ app.post("/login", asyncHandler(async (req, res) => {
 }));
 
 app.get("/logout", (req, res) => {
-    req.session.destroy();
-    res.redirect("/login");
+    req.session.destroy((err) => {
+        if (err) console.error('Logout error:', err);
+        res.clearCookie('project_mgmt_session');
+        res.redirect("/login");
+    });
 });
 
 // app.get("/projects", (req, res) => {
@@ -170,7 +202,7 @@ app.get("/logout", (req, res) => {
 //     }        
     
 // });
-app.get("/projects", isAuthenticated, asyncHandler(async (req, res) => {
+app.get("/projects",  asyncHandler(async (req, res) => {
     let search = req.query.search;
     let query;
     let values = [];

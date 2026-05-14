@@ -24,14 +24,13 @@
     <div class="app-header__right">
         <% if (locals.username) { %>
             <span class="app-header__user">👤 <%= username %></span>
+            <a href="/logout" class="app-header__logout">Logout</a>
         <% } %>
 
         <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
             <span class="theme-toggle__icon--sun">☀️</span>
             <span class="theme-toggle__icon--moon">🌙</span>
         </button>
-
-        <a href="/logout" class="app-header__logout">Logout</a>
     </div>
 
     <button class="app-header__hamburger" onclick="document.getElementById('main-nav').classList.toggle('open')" aria-label="Toggle menu">
