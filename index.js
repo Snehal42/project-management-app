@@ -11,7 +11,7 @@ const { body, validationResult } = require('express-validator');
 const MySQLStore = require('express-mysql-session')(session);
 
 const app = express();
-app.set('trust proxy', 1); // Trust first proxy (e.g. Vercel)
+app.set('trust proxy', true); // Trust all proxies (recommended for Vercel)
 
 // Security and Middleware setup
 app.use(helmet({
@@ -32,7 +32,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     port: parseInt(process.env.DB_PORT) || 4000,
     waitForConnections: true,
-    connectionLimit: 1, // Single connection for serverless
+    connectionLimit: 10, // Safe connection limit for parallel queries
     queueLimit: 0,
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
@@ -56,12 +56,12 @@ app.use(session({
     name: 'project_mgmt_session',
     secret: process.env.SESSION_SECRET || 'fallback-secret',
     proxy: process.env.NODE_ENV === 'production',
-    resave: true, // Required for some stores to sync correctly
+    resave: false, // Save session only if modified to prevent database writes on every page view
     saveUninitialized: false,
-    rolling: true, // Refreshes session on every request
+    rolling: false, // Decouple from every request to prevent cookie race conditions
     cookie: { 
         path: '/',
-        secure: process.env.NODE_ENV === 'production' && process.env.FORCE_HTTPS === 'true',
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies strictly in production (HTTPS)
         httpOnly: true,
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
@@ -133,7 +133,7 @@ app.get("/login", (req, res) => {
     res.render("login.ejs");
 });
 
-app.get("/dashboard",  asyncHandler(async (req, res) => {
+app.get("/dashboard", isAuthenticated, asyncHandler(async (req, res) => {
     // 1. Ongoing Projects count
     const [ongoing] = await pool.execute("SELECT COUNT(*) as count FROM projects WHERE project_status != 'Completed'");
     // 2. Deadline Approaching count (<= 5 days)
@@ -202,7 +202,7 @@ app.get("/logout", (req, res) => {
 //     }        
     
 // });
-app.get("/projects",  asyncHandler(async (req, res) => {
+app.get("/projects", isAuthenticated, asyncHandler(async (req, res) => {
     let search = req.query.search;
     let query;
     let values = [];
