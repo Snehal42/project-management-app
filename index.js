@@ -45,8 +45,8 @@ const pool = mysql.createPool({
 
 // Configure MySQL Session Store
 const sessionStore = new MySQLStore({
-    clearExpired: true,
-    checkExpirationInterval: 900000, // 15 mins
+    createDatabaseTable: false, // Table already exists, prevents startup checks
+    clearExpired: false, // Prevents background intervals in serverless environment
     expiration: 1000 * 60 * 60 * 24 * 30, // 30 days
 }, pool);
 
@@ -61,7 +61,7 @@ app.use(session({
     rolling: false, // Decouple from every request to prevent cookie race conditions
     cookie: { 
         path: '/',
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies strictly in production (HTTPS)
+        secure: 'auto', // Automatically sets secure to true if HTTPS, false if HTTP
         httpOnly: true,
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
